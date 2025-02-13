@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flow over V-Notch</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+        header {
+            background-color: #0077b6;
+            color: white;
+            padding: 20px;
+            font-size: 24px;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            padding: 20px;
+            background: white;
+            text-align: left;
+        }
+        .dropdown {
+            background: #e0f7fa;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .dropdown-content {
+            display: none;
+            padding: 10px;
+            border-top: 1px solid #ccc;
+        }
+        .back-link {
+            display: block;
+            margin-top: 20px;
+            font-size: 18px;
+            color: #0077b6;
+            text-decoration: none;
+	    text-align: center;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+        th, td {
+            padding: 8px;
+            text-align: center;
+        }
+        input[type="number"], button {
+            padding: 8px;
+            margin: 5px;
+            font-size: 16px;
+        }
+        button {
+            cursor: pointer;
+        }
+        .sub-section {
+            margin-top: 10px;
+        }
+    </style>
+    <script>
+        function toggleContent(id) {
+            var content = document.getElementById(id);
+            if (content.style.display === "none" || content.style.display === "") {
+                content.style.display = "block";
+            } else {
+                content.style.display = "none";
+            }
+        }
+
+        function calculateCd() {
+            const length = parseFloat(document.getElementById('length').value);
+            const breadth = parseFloat(document.getElementById('breadth').value);
+            const height = parseFloat(document.getElementById('height').value);
+            const time = parseFloat(document.getElementById('time').value);
+            const gaugeReading = parseFloat(document.getElementById('gaugeReading').value);
+
+            if (!isNaN(length) && !isNaN(breadth) && !isNaN(height) && !isNaN(time) && !isNaN(gaugeReading)) {
+                // Constants
+                const g = 9.81; // acceleration due to gravity (m/s²)
+                const theta = 22.5; // angle of the notch in degrees
+                const tanTheta = 12.98
+; // tan(22.5°)
+
+                // Quantity of water collected (Vo)
+                const quantityWater = height * length * breadth;
+
+                // Actual Discharge (Qact)
+                const actualDischarge = quantityWater / time;
+
+                // Theoretical Discharge (Qth)
+                const theoreticalDischarge = (8 / 15) * Math.sqrt(2 * g) * tanTheta * Math.pow(gaugeReading, 5 / 2);
+
+                // Coefficient of Discharge (Cd)
+                const coefficientDischarge = actualDischarge / theoreticalDischarge;
+
+                // Populate the table with values
+                document.getElementById('cdTable').style.display = 'block';
+                document.getElementById('gaugeReadingValue').innerText = gaugeReading.toFixed(10);
+                document.getElementById('quantityWaterValue').innerText = quantityWater.toFixed(10);
+                document.getElementById('timeValue').innerText = time.toFixed(10);
+                document.getElementById('actualDischargeValue').innerText = actualDischarge.toFixed(10);
+                document.getElementById('theoreticalDischargeValue').innerText = theoreticalDischarge.toFixed(10);
+                document.getElementById('coefficientDischargeValue').innerText = coefficientDischarge.toFixed(10);
+            } else {
+                alert("Please fill in all fields.");
+            }
+        }
+
+        function resetInputs() {
+            // Clear input fields and reset table
+            document.getElementById('length').value = '';
+            document.getElementById('breadth').value = '';
+            document.getElementById('height').value = '';
+            document.getElementById('time').value = '';
+            document.getElementById('gaugeReading').value = '';
+
+            // Reset table values
+            document.getElementById('cdTable').style.display = 'none';
+            document.getElementById('gaugeReadingValue').innerText = '';
+            document.getElementById('quantityWaterValue').innerText = '';
+            document.getElementById('timeValue').innerText = '';
+            document.getElementById('actualDischargeValue').innerText = '';
+            document.getElementById('theoreticalDischargeValue').innerText = '';
+            document.getElementById('coefficientDischargeValue').innerText = '';
+        }
+    </script>
+</head>
+<body>
+    <header>
+        Flow over V-Notch
+    </header>
+    <div class="container">
+
+        <div class="dropdown" onclick="toggleContent('aim')">Aim ▼</div>
+        <div class="dropdown-content" id="aim">To calibrate and calculate the coefficient of discharge.</div>
+
+
+        <div class="dropdown" onclick="toggleContent('equipment')">Equipment Required ▼</div>
+        <div class="dropdown-content" id="equipment">Measuring tank, V-Notch weir, flowmeter, stopwatch.</div>
+
+
+        <div class="dropdown" onclick="toggleContent('theory')">Theory ▼</div>
+        <div class="dropdown-content" id="theory">
+           <p>A notch is an opening in the side of a measuring tank or reservoir extending above the free surface. These notches are used to measure discharge of open channel flows, by passing or placing or constructing them across the stream. Notches are generally used for measuring discharge in small open channels or laboratory flumes.</p>
+
+<p>Notches can be of different shapes such as triangular, rectangular, trapezoidal, stepped notch, etc. the bottom of the notch over which the water flows is known as crest or sill and the thin sheet of water flowing through the notch is known as nappe or vein. The edges of the notch are bevelled on the downstream side so as to have a sharp-edged sides and crest resulting in minimum contact with the flowing fluid.</p>
+
+<p><img src="exp1-1.png" alt=""></p>
+
+
+
+<p>The discharge over notch is measured by measuring the head acting over the notch. As water approaches the notch, its surface becomes curved. Therefore, the head over the notch is to be measured at the upstream of the notch where the effect of curvature is minimum. Also, it should be close to the notch so that the loss of energy between head measuring section and notch is negligible. In practical, the head over notch is measured at a distance of 3 to 4 times the maximum head from the notch.</p>
+
+<p><strong>V-notch or Triangular notch</strong></p>
+
+<p><img src="exp1-2.png" alt=""></p>
+
+
+
+<p>The V-notch or triangular notch is sharp crested notch, which is maily used to determine the low rate of flow.</p>
+
+<p><img src="exp1-3.png" alt=""></p>
+
+
+<p>Let,</p>
+<ul>
+
+<li>H = Height of the liquid above the apex of the notch,</li>
+
+<li>θ = Angle of the notch,</li>
+
+<li>Cd = Coefficient of discharge,</li>
+</ul>
+<p>From the geometry of the figure, we find that,</p>
+
+<p><img src="exp1-4.png" alt=""></p>
+<p><img src="exp1-5.png" alt=""></p>
+
+<p>We know that the theoretical velocity of water through the strip = <img src="exp1-6.png" alt=""></p>
+
+<p>and discharge over the notch,</p>
+
+<p><img src="exp1-7.png" alt=""></p>
+<p><img src="exp1-8.png" alt=""></p>
+
+
+<p>The total discharge over the whole notch may be found out only by integrating the above equation within the limits 0 and H.</p>
+<p><img src="exp1-9.png" alt=""></p>
+<p><img src="exp1-10.png" alt=""></p>
+<p><img src="exp1-11.png" alt=""></p>
+<p><img src="exp1-12.png" alt=""></p>
+<p><img src="exp1-13.png" alt=""></p>
+<p><img src="exp1-14.png" alt=""></p>
+<p><img src="exp1-15.png" alt=""></p>
+
+
+
+
+
+
+        </div>
+
+        <div class="dropdown" onclick="toggleContent('formulae')">Formulae Used ▼</div>
+        <div class="dropdown-content" id="formulae"><p><img src="exp1f.png" alt =""></p>, <p>where C<sub>d</sub> is the coefficient of discharge, H is the height of water level and θ is the angle of the triangular notch.</p></div>
+
+    
+        <div class="dropdown" onclick="toggleContent('procedure')">Procedure Steps ▼</div>
+        <div class="dropdown-content" id="procedure">
+            <ol>
+                <li>Fill the tank with water.</li>
+                <li>Open the valve gradually.</li>
+                <li>Measure discharge.</li>
+                <li>Record height of water.</li>
+            </ol>
+        </div>
+
+
+        <div class="dropdown" onclick="toggleContent('simulation')">Simulation ▼</div>
+        <div class="dropdown-content" id="simulation">
+            <video width="600" controls>
+                <source src="exp1.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+	    <p> <a href="https://fm-nitk.vlabs.ac.in/">Source</a></p> 
+        </div>
+
+        <!-- Observations & Calculations Section -->
+        <div class="dropdown" onclick="toggleContent('observations')">Observations & Calculations ▼</div>
+        <div class="dropdown-content" id="observations">
+            <div class="sub-section">
+                <label for="length">Length of Collecting Tank (m):</label>
+                <input type="number" id="length" step="any">
+
+                <label for="breadth">Breadth of Collecting Tank (m):</label>
+                <input type="number" id="breadth" step="any">
+
+                <label for="height">Height of Water Collected (r) (m):</label>
+                <input type="number" id="height" step="any">
+
+                <label for="time">Time (t) (seconds):</label>
+                <input type="number" id="time" step="any">
+
+                <label for="gaugeReading">Gauge Reading (h) (m):</label>
+                <input type="number" id="gaugeReading" step="any">
+            </div>
+            <button onclick="calculateCd()">Calculate Coefficient of Discharge</button>
+            <button onclick="resetInputs()">Reset</button>
+
+            <div id="cdTable" style="display:none;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Gauge Reading (h)</th>
+                            <th>Quantity of Water Collected (V<sub>o</sub>)</th>
+                            <th>Time (t)</th>
+                            <th colspan="2">Discharge</th>
+                            <th>Calculation of Coefficient of Discharge (Cd)</th>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>Actual (Q<sub>act</sub>)</td>
+                            <td>Theoretical (Q<sub>th</sub>)</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Metre</td>
+                            <td>Metre<sup>3</sup></td>
+                            <td>Seconds</td>
+                            <td>Metre<sup>3</sup>/second</td>
+                            <td>Metre<sup>3</sup>/second</td>
+                            <td>-</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td id="gaugeReadingValue"></td>
+                            <td id="quantityWaterValue"></td>
+                            <td id="timeValue"></td>
+                            <td id="actualDischargeValue"></td>
+                            <td id="theoreticalDischargeValue"></td>
+                            <td id="coefficientDischargeValue"></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <p><strong>Steps of Calculation:</strong></p>
+                <ul>
+                    <li>Quantity of water collected (V<sub>o</sub>) = Height of water * Length of collecting tank * Breadth of collecting tank</li>
+                    <li>Actual discharge (Q<sub>act</sub>) = Quantity of water collected / Time</li>
+                    <li>Theoretical discharge (Q<sub>th</sub>) = (8/15) * sqrt(2g) * tan(θ) * (Gauge Reading)<sup>5/2</sup></li>
+                    <li>Coefficient of discharge (C<sub>d</sub>) = Actual discharge / Theoretical discharge</li>
+                </ul>
+                <p><strong>Formulae Used:</strong></p>
+                <ul>
+                    <li>Q<sub>act</sub> = (Height * Length * Breadth) / Time</li>
+                    <li>Q<sub>th</sub> = (8/15) * sqrt(2g) * tan(θ) * (Gauge Reading)<sup>5/2</sup></li>
+                    <li>C<sub>d</sub> = Q<sub>act</sub> / Q<sub>th</sub></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="dropdown" onclick="toggleContent('precautions')">Precautions ▼</div>
+        <div class="dropdown-content" id="precautions">Avoid turbulence, measure accurately.</div>
+
+        <a href="index.html" class="back-link">← Back to Home</a>
+    </div>
+</body>
+</html>

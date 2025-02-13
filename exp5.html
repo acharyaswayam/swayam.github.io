@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calibration of Orificemeter</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; text-align: center; }
+        header { background-color: #0077b6; color: white; padding: 20px; font-size: 24px; }
+        .container { width: 80%; margin: auto; padding: 20px; background: white; text-align: left; }
+        .dropdown { background: #e0f7fa; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 8px; cursor: pointer; font-size: 18px; display: flex; justify-content: space-between; align-items: center; }
+        .dropdown-content { display: none; padding: 10px; border-top: 1px solid #ccc; }
+        .back-link { display: block; margin-top: 20px; font-size: 18px; color: #0077b6; text-decoration: none; text-align: center; }
+        .back-link:hover { text-decoration: underline; }
+        img { max-width: 100%; height: auto; margin: 10px 0; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        table, th, td { border: 1px solid #ccc; text-align: center; padding: 8px; }
+        input[type="number"], button { padding: 8px; margin: 5px; font-size: 16px; }
+        button { cursor: pointer; }
+    </style>
+    <script>
+        function toggleContent(id) {
+            let content = document.getElementById(id);
+            content.style.display = content.style.display === "none" ? "block" : "none";
+        }
+ let runCount = 0;
+        function toggleContent(id) {
+            let content = document.getElementById(id);
+            content.style.display = content.style.display === "none" ? "block" : "none";
+        }
+        function calculateOrificemeter() {
+            let Vo = parseFloat(document.getElementById('Vo').value);
+            let t = parseFloat(document.getElementById('t').value);
+            let h1 = parseFloat(document.getElementById('h1').value);
+            let h2 = parseFloat(document.getElementById('h2').value);
+            if (isNaN(Vo) || isNaN(t) || isNaN(h1) || isNaN(h2)) {
+                alert("Please enter all values correctly.");
+                return;
+            }
+            runCount++;
+            let Q = Vo / t;
+            let h = Math.abs(h1 - h2);
+            let a1 = 6.157e-4;
+            let a2 = 1.539e-4;
+            let g = 9.81;
+            let K = (Q * Math.sqrt(a1 * a1 - a2 * a2)) / (a1 * a2 * Math.sqrt(2 * g * h));
+            let table = document.getElementById("orificemeterTable");
+            if (runCount === 1) {
+                table.innerHTML = `<tr><th rowspan='2'>Serial Number</th><th colspan='2'>Discharge Measurement</th><th colspan='3'>Piezometer Reading</th><th>Orificemeter Coefficient</th></tr>
+                                   <tr><th>Q = Vo/t (m³/s)</th><th>t (s)</th><th>h1 (m)</th><th>h2 (m)</th><th>h = |h1 - h2| (m)</th><th>K</th></tr>`;
+            }
+            let newRow = `<tr><td>${runCount}</td><td>${Q.toFixed(6)}</td><td>${t}</td><td>${h1}</td><td>${h2}</td><td>${h.toFixed(6)}</td><td>${K.toFixed(6)}</td></tr>`;
+            table.innerHTML += newRow;
+        }
+        function resetOrificemeter() {
+            runCount = 0;
+            document.getElementById("inputForm").reset();
+            document.getElementById("orificemeterTable").innerHTML = '';
+        }
+    </script>
+</head>
+<body>
+    <header>Calibration of Orificemeter</header>
+    <div class="container">
+        <div class="dropdown" onclick="toggleContent('aim')">Aim ▼</div>
+        <div class="dropdown-content" id="aim">To calibrate an Orificemeter and determine its coefficient of discharge.</div>
+        
+        <div class="dropdown" onclick="toggleContent('equipment')">Equipment Required ▼</div>
+        <div class="dropdown-content" id="equipment">Orificemeter setup, U-tube manometer, flow control valve, stopwatch.</div>
+        
+        <div class="dropdown" onclick="toggleContent('theory')">Theory ▼</div>
+        <div class="dropdown-content" id="theory">
+		<p>An orifice meter or orifice plate is a device used for measuring the rate of flow of a fluid through a pipe. It works on the same principle as a venturimeter. It consists of a flat circular plate which has a circular sharp edged hole called orifice. It is an opening in the side or bottom of a vessel or a tank through which liquid will flow under the condition that the liquid surface is always above the top edge of the opening. The orifice diameter is 0.5 times the diameter of the pipe. A differential manometer is connected at section 1 which is at a distance of about 1.5 to 2 times the pipe diameter upstream from theorifice plate, and at section 2, which is at a distance of about half the diameter of the orifice on the downstream side from the orifice plate. The basic principle on which a orifice meter works is that by reducing the cross sectional area of the flow of passage, a pressure difference between the two sections is developed and the measurement of the pressure difference enables the determination of the discharge through pipe. However, an orifice meter is a cheaper arrangement for discharge measurement through pipes and its installation requires a smaller length as compared to venturimeter.</p>
+
+<p><img src="exp5-1.png" alt=""></p>
+<p><img src="exp5-2.png" alt=""></p>
+
+<p><strong><u>CO-FFICIENT OF DISCHARGE:</u></strong></p>
+
+<p><strong>The actual discharge,</strong></p>
+
+<p><img src="exp5-3.png" alt=""></p>
+
+<p>Where<ul>
+<li>a – Area of measuring tank in cm<sup>2</sup></li>
+<li>h – Height differences in piezometer in cm.</li>
+<li>t – Time to collect water for a height difference of h cm, measured in seconds.</li>
+</ul></p>
+
+<p><strong>Theoretical discharge</strong></p>
+<p>By applying the Bernoulli equation to the upstream section and downstream section an
+expression for the discharge is obtained.</p>
+<p>Theoretical discharge for venturimeter/orifice meter</p> <p><img src="exp5-4.png" alt=""></p>
+
+<p> Where,<ul>
+<li>A<sub>1</sub> – The area at inlet side in cm<sup>2</sup></li>
+<li>A<sub>2</sub> – The area at throat in cm<sup>2</sup></li>
+<li>H<sub>w</sub> - Head difference in the manometer, converted to cm of water.</li>
+<li>g – Acceleration due to gravity (9.81m/s<sup>2</sup>).</li>
+</ul></p>
+<p>Coefficient of discharge,</p>
+<p><img src="exp5-5.png" alt=""></p>
+		
+	</div>
+        
+        <div class="dropdown" onclick="toggleContent('formulae')">Formulae Used ▼</div>
+        <div class="dropdown-content" id="formulae"><p><img src = "exp4f.jpg" alt = ""></p>where, <ul> <li>Cd is the coefficient of discharge.</li>
+<li>a<sub>1</sub> is area of cross section of pipe.[given 6.157 x 10<sup>-4</sup> m<sup>2</sup>]</li>
+<li>a<sub>2</sub> is area of cross section of the orifice.[given 1.539 x 10<sup>-4</sup> m<sup>2</sup>]</li>
+<li>g is acceleration due to gravity</li>
+<li>h=h<sub>1</sub>-h<sub>2</sub> [difference in levels in piezometric tubes]</li>
+ </ul>
+</div>
+        
+        <div class="dropdown" onclick="toggleContent('procedure')">Procedure Steps ▼</div>
+        <div class="dropdown-content" id="procedure">
+            <ol>
+                <li>Ensure the Orificemeter setup is properly connected to the flow system.</li>
+                <li>Open the control valve to allow water flow through the Orificemeter.</li>
+                <li>Record the pressure difference using the U-tube manometer.</li>
+                <li>Measure the flow rate using a stopwatch and a measuring tank.</li>
+                <li>Repeat for different flow rates and calculate the coefficient of discharge.</li>
+            </ol>
+        </div>
+        
+        <div class="dropdown" onclick="toggleContent('simulation')">Demonstration ▼</div>
+        <div class="dropdown-content" id="simulation">
+            <video width="600" controls>
+                <source src="exp5.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+	    <p><a href="https://www.youtube.com/watch?v=ekzdEnr4UMA">Source</a></p> 
+        </div>
+        
+        <div class="dropdown" onclick="toggleContent('observations')">Observations & Calculations ▼</div>
+        <div class="dropdown-content" id="observations">
+            <form id="inputForm">
+                <label>Volume of water collected (Vo) [m³]:</label>
+                <input type="number" id="Vo" step="any"><br>
+                <label>Time taken (t) [s]:</label>
+                <input type="number" id="t" step="any"><br>
+                <label>Height of piezometric tube 1 (h1) [m]:</label>
+                <input type="number" id="h1" step="any"><br>
+                <label>Height of piezometric tube 2 (h2) [m]:</label>
+                <input type="number" id="h2" step="any"><br>
+            </form>
+            <button onclick="calculateOrificemeter()">Next Run</button>
+            <button onclick="resetOrificemeter()">Reset</button>
+            <table id="orificemeterTable" border="1"></table>
+        </div>
+        
+        <div class="dropdown" onclick="toggleContent('precautions')">Precautions ▼</div>
+        <div class="dropdown-content" id="precautions">
+            <ul>
+                <li>Ensure proper connections of the apparatus to avoid leaks.</li>
+                <li>Record pressure readings carefully.</li>
+                <li>Maintain steady flow conditions during measurements.</li>
+            </ul>
+        </div>
+        
+        <a href="index.html" class="back-link">← Back to Home</a>
+    </div>
+</body>
+</html>

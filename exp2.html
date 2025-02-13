@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calibration of Rectangular Notch</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+        header {
+            background-color: #0077b6;
+            color: white;
+            padding: 20px;
+            font-size: 24px;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            padding: 20px;
+            background: white;
+            text-align: left;
+        }
+        .dropdown {
+            background: #e0f7fa;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .dropdown-content {
+            display: none;
+            padding: 10px;
+            border-top: 1px solid #ccc;
+        }
+        .back-link {
+            display: block;
+            margin-top: 20px;
+            font-size: 18px;
+            color: #0077b6;
+            text-decoration: none;
+	    text-align: center;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+        th, td {
+            padding: 8px;
+            text-align: center;
+        }
+        input[type="number"], button {
+            padding: 8px;
+            margin: 5px;
+            font-size: 16px;
+        }
+        button {
+            cursor: pointer;
+        }
+        .sub-section {
+            margin-top: 10px;
+        }
+    </style>
+    <script>
+        function toggleContent(id) {
+            var content = document.getElementById(id);
+            if (content.style.display === "none" || content.style.display === "") {
+                content.style.display = "block";
+            } else {
+                content.style.display = "none";
+            }
+        }
+
+        function calculateCd() {
+            const length = parseFloat(document.getElementById('length').value);
+            const breadth = parseFloat(document.getElementById('breadth').value);
+            const height = parseFloat(document.getElementById('height').value);
+            const time = parseFloat(document.getElementById('time').value);
+            const gaugeReading = parseFloat(document.getElementById('gaugeReading').value);
+            const notchWidth = 0.07; // width of the rectangular notch (in meters)
+
+            if (!isNaN(length) && !isNaN(breadth) && !isNaN(height) && !isNaN(time) && !isNaN(gaugeReading)) {
+                const g = 9.81; // acceleration due to gravity (m/s²)
+
+                const quantityWater = height * length * breadth;
+
+                const actualDischarge = quantityWater / time;
+
+                const theoreticalDischarge = (2 / 3) * Math.sqrt(2 * g) * notchWidth * Math.pow(gaugeReading, 3 / 2);
+
+                const coefficientDischarge = actualDischarge / theoreticalDischarge;
+
+                document.getElementById('cdTable').style.display = 'block';
+                document.getElementById('gaugeReadingValue').innerText = gaugeReading.toFixed(10);
+                document.getElementById('quantityWaterValue').innerText = quantityWater.toFixed(10);
+                document.getElementById('timeValue').innerText = time.toFixed(10);
+                document.getElementById('actualDischargeValue').innerText = actualDischarge.toFixed(10);
+                document.getElementById('theoreticalDischargeValue').innerText = theoreticalDischarge.toFixed(10);
+                document.getElementById('coefficientDischargeValue').innerText = coefficientDischarge.toFixed(10);
+            } else {
+                alert("Please fill in all fields.");
+            }
+        }
+
+        function resetInputs() {
+            // Clear input fields and reset table
+            document.getElementById('length').value = '';
+            document.getElementById('breadth').value = '';
+            document.getElementById('height').value = '';
+            document.getElementById('time').value = '';
+            document.getElementById('gaugeReading').value = '';
+
+            // Reset table values
+            document.getElementById('cdTable').style.display = 'none';
+            document.getElementById('gaugeReadingValue').innerText = '';
+            document.getElementById('quantityWaterValue').innerText = '';
+            document.getElementById('timeValue').innerText = '';
+            document.getElementById('actualDischargeValue').innerText = '';
+            document.getElementById('theoreticalDischargeValue').innerText = '';
+            document.getElementById('coefficientDischargeValue').innerText = '';
+        }
+    </script>
+</head>
+<body>
+    <header>
+        Calibration of Rectangular Notch
+    </header>
+    <div class="container">
+        <div class="dropdown" onclick="toggleContent('aim')">Aim ▼</div>
+        <div class="dropdown-content" id="aim">To calibrate and determine the coefficient of discharge for a rectangular notch.</div>
+
+        <div class="dropdown" onclick="toggleContent('equipment')">Equipment Required ▼</div>
+        <div class="dropdown-content" id="equipment">Rectangular notch apparatus, measuring tank, stopwatch, hook gauge.</div>
+
+        <div class="dropdown" onclick="toggleContent('theory')">Theory ▼</div>
+        <div class="dropdown-content" id="theory">
+            <p>A Notch is a device used for measuring the rate of flow of a liquid through a small channel or a tank. It may be defined as an opening in the side of a tank or vessel such as liquid surface in the tank is below the level of opening.</p>
+
+<p>Notches can be of different shapes such as triangular, rectangular, trapezoidal, stepped notch, etc. the bottom of the notch over which the water flows is known as crest or sill and the thin sheet of water flowing through the notch is known as nappe or vein. The edges of the notch are bevelled on the downstream side so as to have a sharp-edged sides and crest resulting in minimum contact with the flowing fluid.</p>
+
+<p><img src="exp2-1.png" alt=""></p>
+
+
+<p>The discharge over notch is measured by measuring the head acting over the notch. As water approaches the notch, its surface becomes curved. Therefore, the head over the notch is to be measured at the upstream of the notch where the effect of curvature is minimum. Also, it should be close to the notch so that the loss of energy between head measuring section and notch is negligible. In practical, the head over notch is measured at a distance of 3 to 4 times the maximum head from the notch.</p>
+
+<p><strong>Rectangular notch:</strong></p>
+<p>It takes its name from the shape of its notch. The discharge through a weir or notch is directly related to the water depth or head (H). This head is affected by the condition of the crest, the contraction, the velocity of approaching stream and the elevation of the water surface downstream from the weir.</p>
+
+<p><img src="exp2-2.png" alt=""></p>
+
+
+<p><strong>Ventilation of notch or weirs:</strong><p>
+<p>The nappe emerging out from the notch or weir touches the side walls of the channel. The air below the nappe and the walls are trapped. This air gradually carried along with flowing water and the pressure between the nappe and wall is reduced below atmospheric pressure. Eventually negative pressure is developed and as a result, the nappe starts to depress. The nappe is coming near the wall of the weir and such type of nappe is called depressed nappe.</p>
+
+<p><img src="exp2-3.png" alt=""></p>
+
+<p>When water emerges out, the initial nappe becomes depressed nappe where pressure falls below in this area. The discharge increases due to low pressure in the downstream. When no air is left in the space, the nappe adheres to the weir or notch and the nappe is called clinging nappe. During this clinging of nappe, the ventilated holes are made on the wall and the weir. These holes are known as ventilation holes and the notch is known as notch.</p>
+
+<p>The experimental data shows that the ventilated area may be about 0.5% of (L x Z), where L is the length of crest and Z is the depth of water.<p>
+
+<p><strong>Effect of computed discharge due to measurement of head:</strong></p>
+<p>The equation of discharge in rectangular notch is</p>
+
+<p><img src="exp2-4.png" alt=""></p>
+<p><img src="exp2-5.png" alt=""></p>
+<p><img src="exp2-6.png" alt=""></p>
+
+
+<p>Let dQ and dH be the errors in measurement of discharge and head.</p>
+
+<p><img src="exp2-7.png" alt=""></p>
+<p><img src="exp2-8.png" alt=""></p>
+
+<p>i.e., an error of 1% in the discharge is equal to 1.5% of error in the head of rectangular channel.</p>
+        </div>
+
+        <div class="dropdown" onclick="toggleContent('formulae')">Formulae Used ▼</div>
+        <div class="dropdown-content" id="formulae"><p><img src = "exp2f.png" alt = ""></p>
+	<p> Where, Q = discharge of fluid, C<sub>d</sub> = Coefficient of discharge and H = height of water above the notch </p>
+	</div>
+
+        <div class="dropdown" onclick="toggleContent('procedure')">Procedure Steps ▼</div>
+        <div class="dropdown-content" id="procedure">
+            <ol>
+                <li>Fill the upstream tank with water.</li>
+                <li>Open the inlet valve gradually.</li>
+                <li>Use the hook gauge to measure the head (H) over the notch.</li>
+                <li>Collect the discharged water in the measuring tank for a known period using a stopwatch.</li>
+                <li>Calculate the actual discharge by dividing the collected volume by the time taken.</li>
+                <li>Repeat the experiment for different flow rates.</li>
+                <li>Compute the coefficient of discharge (C<sub>d</sub>) for each trial.</li>
+            </ol>
+        </div>
+
+        <div class="dropdown" onclick="toggleContent('simulation')">Simulation ▼</div>
+        <div class="dropdown-content" id="simulation">
+            <video width="600" controls>
+                <source src="exp2.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+	    <p> <a href="https://fm-nitk.vlabs.ac.in/">Source</a></p>
+        </div>
+
+        <div class="dropdown" onclick="toggleContent('observations')">Observations & Calculations ▼</div>
+        <div class="dropdown-content" id="observations">
+            <div class="sub-section">
+                <label for="length">Length of Collecting Tank (m):</label>
+                <input type="number" id="length" step="any">
+
+                <label for="breadth">Breadth of Collecting Tank (m):</label>
+                <input type="number" id="breadth" step="any">
+
+                <label for="height">Height of Water Collected (r) (m):</label>
+                <input type="number" id="height" step="any">
+
+                <label for="time">Time (t) (seconds):</label>
+                <input type="number" id="time" step="any">
+
+                <label for="gaugeReading">Gauge Reading (h) (m):</label>
+                <input type="number" id="gaugeReading" step="any">
+            </div>
+            <button onclick="calculateCd()">Calculate Coefficient of Discharge</button>
+            <button onclick="resetInputs()">Reset</button>
+
+            <div id="cdTable" style="display:none;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Gauge Reading (h)</th>
+                            <th>Quantity of Water Collected (V<sub>o</sub>)</th>
+                            <th>Time (t)</th>
+                            <th colspan="2">Discharge</th>
+                            <th>Calculation of Coefficient of Discharge (Cd)</th>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>Actual (Q<sub>act</sub>)</td>
+                            <td>Theoretical (Q<sub>th</sub>)</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>Metre</td>
+                            <td>Metre<sup>3</sup></td>
+                            <td>Seconds</td>
+                            <td>Metre<sup>3</sup>/second</td>
+                            <td>Metre<sup>3</sup>/second</td>
+                            <td>Metre<sup>3</sup>/second</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td id="gaugeReadingValue"></td>
+                            <td id="quantityWaterValue"></td>
+                            <td id="timeValue"></td>
+                            <td id="actualDischargeValue"></td>
+                            <td id="theoreticalDischargeValue"></td>
+                            <td id="coefficientDischargeValue"></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <p><strong>Steps of Calculation:</strong></p>
+                <ul>
+                    <li>Quantity of water collected (V<sub>o</sub>) = Height of water * Length of collecting tank * Breadth of collecting tank</li>
+                    <li>Actual discharge (Q<sub>act</sub>) = Quantity of water collected / Time</li>
+                    <li>Theoretical discharge (Q<sub>th</sub>) = (2/3) * sqrt(2g) * width of rectangular notch * (Gauge Reading)<sup>3/2</sup></li>
+                    <li>Coefficient of discharge (C<sub>d</sub>) = Actual discharge / Theoretical discharge</li>
+                </ul>
+                <p><strong>Formulae Used:</strong></p>
+                <ul>
+                    <li>Q<sub>act</sub> = (Height * Length * Breadth) / Time</li>
+                    <li>Q<sub>th</sub> = (2/3) * sqrt(2g) * width of rectangular notch * (Gauge Reading)<sup>3/2</sup></li>
+                    <li>C<sub>d</sub> = Q<sub>act</sub> / Q<sub>th</sub></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="dropdown" onclick="toggleContent('precautions')">Precautions ▼</div>
+        <div class="dropdown-content" id="precautions">
+            <ul>
+                <li>Ensure proper calibration of measuring instruments.</li>
+                <li>Record readings accurately.</li>
+                <li>Maintain a steady flow for consistent results.</li>
+            </ul>
+        </div>
+		<a href="index.html" class="back-link">← Back to Home</a>
+    </div>
+</body>
+</html>

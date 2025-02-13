@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verification of Bernoulli's Theorem</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; text-align: center; }
+        header { background-color: #0077b6; color: white; padding: 20px; font-size: 24px; }
+        .container { width: 80%; margin: auto; padding: 20px; background: white; text-align: left; }
+        .dropdown { background: #e0f7fa; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 8px; cursor: pointer; font-size: 18px; display: flex; justify-content: space-between; align-items: center; }
+        .dropdown-content { display: none; padding: 10px; border-top: 1px solid #ccc; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        table, th, td { border: 1px solid #ccc; text-align: center; padding: 8px; }
+        input[type="number"], button { padding: 8px; margin: 5px; font-size: 16px; }
+        button { cursor: pointer; }
+	.back-link {
+            display: block;
+            margin-top: 20px;
+            font-size: 18px;
+            color: #0077b6;
+            text-decoration: none;
+            text-align: center;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+    <script>
+        let runCount = 0;
+        function toggleContent(id) {
+            let content = document.getElementById(id);
+            content.style.display = content.style.display === "none" ? "block" : "none";
+        }
+        function calculateBernoulli() {
+            if (runCount >= 10) {
+                alert("Maximum of 10 runs reached.");
+                return;
+            }
+            runCount++;
+            let r = parseFloat(document.getElementById('riseLevel').value);
+            let t = parseFloat(document.getElementById('time').value);
+            let heights = [];
+            for (let i = 1; i <= 9; i++) {
+                heights.push(parseFloat(document.getElementById('h' + i).value));
+            }
+            if (isNaN(r) || isNaN(t) || heights.some(isNaN)) {
+                alert("Please enter all values correctly.");
+                return;
+            }
+            const g = 9.81;
+            const areaTank = 0.1;
+            let Q = (r * areaTank) / t;
+            let areas = [6.1701, 5.0074, 4.1620, 3.3329, 2.7172, 3.3006, 4.2273, 5.1794, 6.4063].map(a => a * 1e-4);
+            let velocities = areas.map(A => Q / A);
+            let kineticEnergy = velocities.map(V => (V * V) / (2 * g));
+            let totalEnergy = heights.map((P, i) => P + kineticEnergy[i]);
+            let table = document.getElementById("bernoulliTable");
+            if (runCount === 1) {
+                table.innerHTML = `<tr><th rowspan='2'>Piezometer Tube</th><th colspan='9'>1 - 9</th></tr>
+                                   <tr><th>A [m²]</th>` + areas.map(A => `<th>${A.toExponential(4)}</th>`).join('') + "</tr>";
+            }
+            let row1 = `<tr><td rowspan='3'>Run ${runCount}</td><td>V = Q/A</td>` + velocities.map(V => `<td>${V.toFixed(10)}</td>`).join('') + "</tr>";
+            let row2 = `<tr><td>V²/2g</td>` + kineticEnergy.map(K => `<td>${K.toFixed(10)}</td>`).join('') + "</tr>";
+            let row3 = `<tr><td>P/w + V²/2g + Z</td>` + totalEnergy.map(T => `<td>${T.toFixed(10)}</td>`).join('') + "</tr>";
+            table.innerHTML += row1 + row2 + row3;
+        }
+        function resetBernoulli() {
+            runCount = 0;
+            document.getElementById("inputForm").reset();
+            document.getElementById("bernoulliTable").innerHTML = '';
+        }
+    </script>
+</head>
+<body>
+    <header>Verification of Bernoulli's Theorem</header>
+    <div class="container">
+        <div class="dropdown" onclick="toggleContent('aim')">Aim ▼</div>
+        <div class="dropdown-content" id="aim">To verify Bernoulli's Theorem.</div>
+        <div class="dropdown" onclick="toggleContent('equipment')">Equipment Required ▼</div>
+        <div class="dropdown-content" id="equipment">Bernoulli's apparatus, piezometric tubes, collecting tank, stopwatch.</div>
+        <div class="dropdown" onclick="toggleContent('theory')">Theory ▼</div>
+        <div class="dropdown-content" id="theory">
+	<p>The Bernoulli theorem is an approximate relation between pressure, velocity, and elevation, and is valid in regions of steady, incompressible flow where net frictional forces are negligible. The equation is obtained when Euler’s equation is integrated along the streamline for a constant density (incompressible) fluid.</p>
+            <p>Bernoulli’s equation states that the sum of the kinetic energy (velocity head), the pressure energy (static head), and potential energy (elevation head) per unit weight of the fluid at any point remains constant, provided the flow is steady, irrotational, and frictionless, and the fluid used is incompressible.</p>
+            <p>Pressure head (P/γ) + Velocity head (V²/2g) + Elevation (Z) = a constant.</p>
+            <p>Where:</p>
+            <ul>
+                <li>P = Pressure (N/m²)</li>
+                <li>γ = Density of the fluid (kg/m³)</li>
+                <li>V = Velocity of flow (m/s)</li>
+                <li>g = Acceleration due to gravity (m/s²)</li>
+                <li>Z = Elevation from datum line (m)</li>
+            </ul>
+            <p>Bernoulli’s equation is widely applied in fluid flow problems such as jets issuing from an orifice, jet trajectory, flow under a gate and over a weir, flow metering, and flows associated with pumps and turbines.</p>
+	</div>
+        <div class="dropdown" onclick="toggleContent('formulae')">Formulae Used ▼</div>
+        <div class="dropdown-content" id="formulae"><strong>Q = V/T</strong>, <p>where V = r × b × l.</p>
+	<p><ul> <li>r = rise in water in collecting tank (in m)</li>
+	<li>l = length of collecting tank (in m) [given 0.4m]</li>
+	<li>b = breadth of collecting tank (in m) [given 0.25m]</li></p>
+	</div>
+        <div class="dropdown" onclick="toggleContent('procedure')">Procedure Steps ▼</div>
+        <div class="dropdown-content" id="procedure">
+		<ol>
+		<li>Keep the bypass valve open and start the pump and slowly start closing valve.</li>
+		<li>The water shall start flowing through the flow channel. The level in the Piezometer tubes shall start rising.</li>
+		<li>Open the valve on the delivery tank side and adjust the head in the Piezometer tubes to steady position.</li>
+		<li>Measure the heads at all the points and also discharge with help of diversion pan in the measuring tank.</li>
+		<li>Varying the discharge and repeat the procedure.</li></ol>
+	</div>
+        <div class="dropdown" onclick="toggleContent('simulation')">Simulation ▼</div>
+        <div class="dropdown-content" id="simulation"><video width="600" controls><source src="exp3.mp4" type="video/mp4">Your browser does not support the video tag.</video>
+	<p><a href="https://www.youtube.com/watch?v=VgaLPfdhmHQ">Source</a></p>
+	</div>
+        <div class="dropdown" onclick="toggleContent('observations')">Observations & Calculations ▼</div>
+        <div class="dropdown-content" id="observations">
+            <form id="inputForm">
+                <label>Rise in level of collecting tank (r) [m]:</label>
+                <input type="number" id="riseLevel" step="any"><br>
+                <label>Time (t) [s]:</label>
+                <input type="number" id="time" step="any"><br>
+                <label>Height in Piezometric Tubes (h) [m]:</label><br>
+                <label>1:</label> <input type="number" id="h1" step="any"><br>
+                <label>2:</label> <input type="number" id="h2" step="any"><br>
+                <label>3:</label> <input type="number" id="h3" step="any"><br>
+                <label>4:</label> <input type="number" id="h4" step="any"><br>
+                <label>5:</label> <input type="number" id="h5" step="any"><br>
+                <label>6:</label> <input type="number" id="h6" step="any"><br>
+                <label>7:</label> <input type="number" id="h7" step="any"><br>
+                <label>8:</label> <input type="number" id="h8" step="any"><br>
+                <label>9:</label> <input type="number" id="h9" step="any"><br>
+            </form>
+            <button onclick="calculateBernoulli()">Next Run</button>
+            <button onclick="resetBernoulli()">Reset</button>
+            <table id="bernoulliTable" border="1"></table>
+        </div>
+	<div class="dropdown" onclick="toggleContent('precautions')">Precautions ▼</div>
+        <div class="dropdown-content" id="precautions">
+            <ul>
+                <li>Ensure all piezometric tubes are free from air bubbles.</li>
+                <li>Record measurements accurately.</li>
+                <li>Maintain a steady flow to minimize errors.</li>
+                <li>Handle equipment carefully to avoid damage.</li>
+            </ul>
+        </div>
+	<a href="index.html" class="back-link">← Back to Home</a>
+    </div>
+</body>
+</html>

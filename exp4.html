@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calibration of Venturimeter</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; text-align: center; }
+        header { background-color: #0077b6; color: white; padding: 20px; font-size: 24px; }
+        .container { width: 80%; margin: auto; padding: 20px; background: white; text-align: left; }
+        .dropdown { background: #e0f7fa; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 8px; cursor: pointer; font-size: 18px; display: flex; justify-content: space-between; align-items: center; }
+        .dropdown-content { display: none; padding: 10px; border-top: 1px solid #ccc; }
+        .back-link {
+            display: block;
+            margin-top: 20px;
+            font-size: 18px;
+            color: #0077b6;
+            text-decoration: none;
+            text-align: center;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        img { max-width: 100%; height: auto; margin: 10px 0; }
+	table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        table, th, td { border: 1px solid #ccc; text-align: center; padding: 8px; }
+        input[type="number"], button { padding: 8px; margin: 5px; font-size: 16px; }
+        button { cursor: pointer; }
+    </style>
+    <script>
+        function toggleContent(id) {
+            let content = document.getElementById(id);
+            content.style.display = content.style.display === "none" ? "block" : "none";
+        }
+	let runCount = 0;
+        function toggleContent(id) {
+            let content = document.getElementById(id);
+            content.style.display = content.style.display === "none" ? "block" : "none";
+        }
+        function calculateVenturimeter() {
+            let Vo = parseFloat(document.getElementById('Vo').value);
+            let t = parseFloat(document.getElementById('t').value);
+            let h1 = parseFloat(document.getElementById('h1').value);
+            let h2 = parseFloat(document.getElementById('h2').value);
+            if (isNaN(Vo) || isNaN(t) || isNaN(h1) || isNaN(h2)) {
+                alert("Please enter all values correctly.");
+                return;
+            }
+            runCount++;
+            let Q = Vo / t;
+            let h = Math.abs(h1 - h2);
+            let a1 = 6.157e-4;
+            let a2 = 1.539e-4;
+            let g = 9.81;
+            let K = (Q * Math.sqrt(a1 * a1 - a2 * a2)) / (a1 * a2 * Math.sqrt(2 * g * h));
+            let table = document.getElementById("venturimeterTable");
+            if (runCount === 1) {
+                table.innerHTML = `<tr><th rowspan='2'>Serial Number</th><th colspan='2'>Discharge Measurement</th><th colspan='3'>Piezometer Reading</th><th>Venturimeter Coefficient</th></tr>
+                                   <tr><th>Q = Vo/t (m³/s)</th><th>t (s)</th><th>h1 (m)</th><th>h2 (m)</th><th>h = |h1 - h2| (m)</th><th>K</th></tr>`;
+            }
+            let newRow = `<tr><td>${runCount}</td><td>${Q.toFixed(6)}</td><td>${t}</td><td>${h1}</td><td>${h2}</td><td>${h.toFixed(6)}</td><td>${K.toFixed(6)}</td></tr>`;
+            table.innerHTML += newRow;
+        }
+        function resetVenturimeter() {
+            runCount = 0;
+            document.getElementById("inputForm").reset();
+            document.getElementById("venturimeterTable").innerHTML = '';
+        }
+    </script>
+</head>
+<body>
+    <header>Calibration of Venturimeter</header>
+    <div class="container">
+        <div class="dropdown" onclick="toggleContent('aim')">Aim ▼</div>
+        <div class="dropdown-content" id="aim">To calibrate a Venturimeter and determine its coefficient of discharge.</div>
+        
+        <div class="dropdown" onclick="toggleContent('equipment')">Equipment Required ▼</div>
+        <div class="dropdown-content" id="equipment">Venturimeter apparatus, U-tube manometer, flow control valve, stopwatch.</div>
+        
+        <div class="dropdown" onclick="toggleContent('theory')">Theory ▼</div>
+        <div class="dropdown-content" id="theory">
+		<p>Venturimeter is a flow measurement device, which is based on the principle of Bernoulli's equation. Inside the pipe pressure difference is created by reducing the cross-sectional area of the flow passage. This difference in pressure is measured with the help of manometer and helps in determining rate of fluid flow or other discharge from the pipe line. Venturimeter has a cylindrical entrance section, converging conical inlet, a cylindrical throat and a diverging recovery cone.</p>
+
+<p><b><u>Components of venturimeter :</u></b></p>
+<p><b>a) Cylindrical entrance section:</b> This is the section having the size of a pipe to which it is attached. The venturimeter should be proceeded by a straight pipe of not less than 5 to 10 times the pipe diameter and free from fittings, misalignment and other source of large scale turbulence.</p>
+
+<p><b>b) Converging conical section: </b>The converging takes place at an angle of 21±2°. The velocity of fluid increases as it passes through the converging section and correspondingly the static pressure falls.</p>
+
+<p><b>c) Throat:</b> This is a cylindrical section of minimum area. The velocity is maximum and the pressure is minimum. The throat diameter is usually between ½ to ¼ of the inlet diameter. Length of the throat equals its diameter.</p>
+
+<p><b>d) Diverging section:</b> This is a section in which there is a change of stream area back to the entrance area. The recovery of kinetic energy by its conversion to pressure energy is nearly complete and so the overall pressure loss is small. To accomplish a maximum recovery of kinetic energy the diffuser section is made with an included angle of 5° to 7°. This angle has to be kept less so that the flowing fluid has least tendency to separate out from the boundary of the section.</p>
+
+<p><b><u>Types of Venturi Tubes :</u></b></p>
+<ul>
+<li>a standard long-form or classic venturi tube</li>
+<li>a modified short form where the outlet cone is shortened</li>
+<li>an eccentric form to handle mixed phases or to minimize build-up of heavy materials</li>
+<li>a rectangular form used in duct work</li>
+</ul>
+
+<p><img src="exp4-1.jpg" alt=""></p>
+
+<p>The major disadvantages of this type of flow detection are the high initial costs for installation and difficulty in installation and inspection. The Venturi effect is the reduction in fluid pressure that results when a fluid flows through a constricted section of pipe. The fluid velocity must increase through the constriction to satisfy the equation of continuity, while its pressure must decrease due to conservation of energy: the gain in kinetic energy is balanced by a drop in pressure or a pressure gradient force. An equation for the drop in pressure due to venturi effect may be derived from a combination of Bernoulli’s principle and the equation of continuity.</p>
+
+<p><img src="exp4-2.jpg" alt=""></p>
+
+
+<p>Let d1 = Diameter at inlet or at section 1,</p>
+
+<p>V1 = velocity of fluid at section 1</p>
+
+<p><img src="exp4-3.jpg" alt=""></p>
+
+
+<p>P1 = Pressure at section 1</p>
+
+<p>and d2, V2, a2 and P2 are the corresponding values at section 2.</p>
+
+<p>Applying Bernoulli’s equations at section 1 and section 2, we get,</p>
+
+<p><img src="exp4-4.jpg" alt=""></p>
+
+
+<p>Since the pipe is horizontal, so z1 = z2</p>
+
+<p><img src="exp4-5.jpg" alt=""></p>
+<p><img src="exp4-6.jpg" alt=""></p>
+<p><img src="exp4-7.jpg" alt=""></p>
+
+
+
+<p>Now applying continuity equation at section 1 and 2</p>
+<p><img src="exp4-8.jpg" alt=""></p>
+
+
+<p>Substituting value of v1 in equation (1.4) we get</p>
+
+<p><img src="exp4-9.jpg" alt=""></p>
+
+
+<p>Where,</p>
+<p>x = difference between the liquid column in U tube,</p>
+<p>ρL = density of lighter liquid,</p>
+<p>ρ = density of liquid flowing through pipe.</p>
+
+<p>But, discharge through venturimeter,</p>
+
+<p>Q=a<sub>2</sub>v<sub>2</sub></p>
+
+<p><img src="exp4-10.jpg" alt=""></p>
+
+
+
+<p>Equation (1.5) gives the discharge under ideal conditions and is called as theoretical discharge.</p>
+
+<p>Actual discharge is given by,</p>
+
+<p>Actual discharge = Coefficient of venturimeter x Theoretical discharge</p>
+
+<p><img src="exp4-11.jpg" alt=""></p>
+
+<p>Recovery of Pressure Drop in Orifices, Nozzles and Venturimeters :</p>
+
+<p><img src="exp4-12.jpg" alt=""></p>
+
+<p>The pressure drop in orifice meter and nozzles are significantly higher than the venture meters. Venturi causes less overall pressure loss in a system and thus saves energy: the overall pressure loss is generally between 5 and 20 per cent of the measured differential pressure. The venturimeter has an advantage over the orifice plate in that it does not have a sharp edge which can become rounded; however, the venturimeter is more susceptible to errors due to burrs or deposits round the downstream (throat) tapping. The lengths of straight pipe required for upstream and downstream of a venturimeter for accurate flow measurement are given in ISO 5167-1: 1991.</p>
+
+
+	</div>
+        
+        <div class="dropdown" onclick="toggleContent('formulae')">Formulae Used ▼</div>
+        <div class="dropdown-content" id="formulae"><p><img src = "exp4f.jpg" alt = ""></p>where, <ul> <li>Cd is the coefficient of discharge.</li>
+<li>a<sub>1</sub> is area of cross section of upstream section.[given 6.157 x 10<sup>-4</sup> m<sup>2</sup>]</li>
+<li>a<sub>2</sub> is area of cross section at throat.[given 1.539 x 10<sup>-4</sup> m<sup>2</sup>]</li>
+<li>g is acceleration due to gravity</li>
+<li>h=h<sub>1</sub>-h<sub>2</sub> [difference in levels in piezometric tubes]</li>
+ </ul>
+	</div>
+        
+        <div class="dropdown" onclick="toggleContent('procedure')">Procedure Steps ▼</div>
+        <div class="dropdown-content" id="procedure">
+            <ol>
+                <li>Ensure the Venturimeter setup is properly connected to the flow system.</li>
+                <li>Open the control valve to allow water flow through the Venturimeter.</li>
+                <li>Record the pressure difference using the U-tube manometer.</li>
+                <li>Measure the flow rate using a stopwatch and a measuring tank.</li>
+                <li>Repeat for different flow rates and calculate the coefficient of discharge.</li>
+            </ol>
+        </div>
+        
+        <div class="dropdown" onclick="toggleContent('simulation')">Simulation ▼</div>
+        <div class="dropdown-content" id="simulation">
+            <video width="600" controls>
+                <source src="exp4.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+	    <p> <a href="https://fm-nitk.vlabs.ac.in/">Source</a></p>
+        </div>
+        
+        <div class="dropdown" onclick="toggleContent('observations')">Observations & Calculations ▼</div>
+        <div class="dropdown-content" id="observations">
+            <form id="inputForm">
+                <label>Volume of water collected (Vo) [m³]:</label>
+                <input type="number" id="Vo" step="any"><br>
+                <label>Time taken (t) [s]:</label>
+                <input type="number" id="t" step="any"><br>
+                <label>Height of piezometric tube 1 (h1) [m]:</label>
+                <input type="number" id="h1" step="any"><br>
+                <label>Height of piezometric tube 2 (h2) [m]:</label>
+                <input type="number" id="h2" step="any"><br>
+            </form>
+            <button onclick="calculateVenturimeter()">Next Run</button>
+            <button onclick="resetVenturimeter()">Reset</button>
+            <table id="venturimeterTable" border="1"></table>
+        </div>
+
+        
+        <div class="dropdown" onclick="toggleContent('result')">Result ▼</div>
+        <div class="dropdown-content" id="result">Coefficient of discharge determined successfully.</div>
+        
+        <div class="dropdown" onclick="toggleContent('precautions')">Precautions ▼</div>
+        <div class="dropdown-content" id="precautions">
+            <ul>
+                <li>Ensure proper connections of the apparatus to avoid leaks.</li>
+                <li>Record pressure readings carefully.</li>
+                <li>Maintain steady flow conditions during measurements.</li>
+            </ul>
+        </div>
+        
+        <a href="index.html" class="back-link">← Back to Home</a>
+    </div>
+</body>
+</html>
